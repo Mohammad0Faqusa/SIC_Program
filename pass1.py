@@ -52,7 +52,7 @@ operand = ''
 
 for line in source[start_index+1:] :
 
-
+    
     if is_just_comment(line) : 
         lineCounter += 1 
         continue 
@@ -94,6 +94,8 @@ for line in source[start_index+1:] :
                                        .format(lineCounter))
                 else : 
                     operand = word2
+                    if operand in opcodes_and_directives : 
+                        raise DuplicatedOpcode("Error Opcode is written on operand field in line {}".format(lineCounter))
             else : #word 1 is label 
                 if word2 not in opcodes_and_directives : 
                     raise OperandError("Operand is missed in line {}".format(lineCounter))
@@ -188,11 +190,10 @@ for line in source[start_index+1:] :
                                        .format(lineCounter))
 
                         
-    print(lineCounter , label , opcode , operand) 
-        
-
-  
+    seperatedLine = dict() 
+    seperatedLine.update({'line' : lineCounter , 'label' : label , 'opcode' : opcode , 'operand' : operand}) 
+    intermediateList.append(seperatedLine) 
     lineCounter += 1 
 
-
+print(intermediateList) 
 
