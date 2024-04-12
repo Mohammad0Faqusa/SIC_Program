@@ -67,31 +67,103 @@ for line in source[start_index+1:] :
         break 
 
     statent_length = 1 
-    operand = '' 
-    #check if valid opernad , and detect if opernad is not missed 
-    operand_indx = opcode_indx + 1
-    if operand_indx < len(line) : 
-        if not is_just_comment(line[operand_indx]) : 
-            if line[opcode_indx] in opcodes_with_no_operands : 
-                raise OperandError("Operand is missed in line  {}".format(lineCounter))
-            else : 
-                statent_length = operand_indx + 1 
-                operand = line[operand_indx]
-        if operand_indx + 1 < len(line) : 
-            if not is_just_comment(line[operand_indx + 1]) : 
-                raise OperandError("Operand is now written correctly, or you forgot to put \".\" before the comment in line  {}"
-                                   .format(lineCounter))
-        else : 
-            if line[opcode_indx]  in opcodes_with_no_operands  : 
-                if operand_indx < len(line) and not is_just_comment(line[operand_indx]) : 
-                    raise OperandError("Operand is missed in line  {}".format(lineCounter))
-            else : 
-                statent_length = opcode_indx + 1  
-    else : 
-        if line[opcode_indx] not in opcodes_with_no_operands:
-            raise OperandError("Operand is missed in line  {}".format(lineCounter))
-        else : 
-            statent_length = opcode_indx + 1  
+    # File length : 
+	# • Case 1 
+	# 	○ If not comment : (solved)
+	# 		§ If not opcode : 
+	# 			□ Raise error (opcode is missed)
+	# 		§ Else : 
+	# 			□ If not solo opcode  : 
+	# 				® Rase Error (operand is missed) 
+	# 			□ Else : 
+	# 				® Statement_length = 1 
+	# • Case 2 
+	# 	○ If word2 is comment : 
+	# 		§ If word1 not opcode : 
+	# 			□ Raise error (opcode is missed)
+	# 		§ Else : 
+	# 			□ If word1 not solo opcode  : 
+	# 				® Rase Error (operand is missed) 
+	# 			□ Else : 
+	# 				® Statement_length = 1 
+	# 	○ If word 2 is not comment : 
+	# 		§ If word1 is opcode : 
+	# 			□ If word 1 is solo opcode 
+	# 				® Reise error : (operand is written error, or you forgot to indicate it as comment
+	# 			□ Else : 
+	# 				® Statement_length = 2 {opcode , operand} 
+	# 		§ Else -word1 is label- : 
+	# 			□ Word2 is not solo opcode : 
+	# 				® Rase error (operand is missed) 
+	# 			□ Else : 
+	# 				® Statement_length = 2 {label , opcode}  
+	# • Case > 2 
+	# 	○ Case 3 
+	# 		§ If word1 is opcode : 
+	# 			□ If word2 is comment : 
+	# 				® If not solo operand 
+	# 					◊ Rase error (operand is missed) 
+	# 			□ Else : 
+	# 				® If word 2 is operand : 
+	# 					◊ If opcode is solo : 
+	# 						} Rase error (operand is written wrong, or you forgut to insert "." if comment
+	# 					◊ Else 
+	# 						} If word3 is comment : 
+	# 							– Statement_length = 2 {opcode , operand} 
+	# 						} Else : 
+	# 							– Rase error (operand is written wrong, or you forgut to insert "." if comment
+	# 		§ Else (word1 is label) 
+	# 			□ If word 2 is comment 
+	# 				® Raise error (opcode is missed) 
+	# 			□ Else [word 2 not comment] : 
+	# 				® If not opcode : 
+	# 					◊ Rease error (opcode is missed) 
+	# 				® Else : 
+	# 					◊ If solo opcode 
+	# 						} Word 3 is not comment 
+	# 							– Raise error (operand is written wrong, or you forgut to insert "." 
+	# 						} Else 
+	# 							– Statement_length = 2 {label , solo_opcode} 
+	# 					◊ Else [not solo opcode] : 
+	# 						} If word 3 is comment : 
+	# 							– Error : operand is missed 
+	# 						} Else  :
+	# 							– Stement length = 3 {label, opcode, operand} 
+	# 	○ Case > 3 
+	# 		§ If word1 is opcode : 
+	# 			□ If word2 is comment : 
+	# 				® If not solo operand 
+	# 					◊ Rase error (operand is missed) 
+	# 			□ Else : 
+	# 				® If word 2 is operand : 
+	# 					◊ If opcode is solo : 
+	# 						} Rase error (operand is written wrong, or you forgut to insert "." if comment
+	# 					◊ Else 
+	# 						} If word3 is comment : 
+	# 							– Statement_length = 2 {opcode , operand} 
+	# 						} Else : 
+	# 							– Rase error (operand is written wrong, or you forgut to insert "." if comment
+	# 		§ Else (word1 is label) 
+	# 			□ If word 2 is comment 
+	# 				® Raise error (opcode is missed) 
+	# 			□ Else [word 2 not comment] : 
+	# 				® If not opcode : 
+	# 					◊ Rease error (opcode is missed) 
+	# 				® Else : 
+	# 					◊ If solo opcode 
+	# 						} Word 3 is not comment 
+	# 							– Raise error (operand is written wrong, or you forgut to insert "." 
+	# 						} Else 
+	# 							– Statement_length = 2 {label , solo_opcode} 
+	# 					◊ Else [not solo opcode] : 
+	# 						} If word 3 is comment : 
+	# 							– Error : operand is missed 
+	# 						} Else  :
+	# 							– If word 4 is not comment : 
+	# 								w Raise error (wrong comment) 
+	# 							– Else 
+	# 								w Stement length = 3 {label, opcode, operand} 
+			
 
     
     #write the line into knwon columns locations 
