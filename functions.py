@@ -49,6 +49,28 @@ def file_to_dict(sourceFile) :
 
     return result_dict
 
+def is_just_comment(str) : 
+    if str[0] == '.' : 
+        return True 
+    else :
+        return False 
+
+def index_first_line(list) : 
+    start_index = 0 
+    for x in list : 
+        if is_just_comment(x) : 
+            start_index += 1  
+            continue 
+        else : 
+            return start_index 
+
+def opcode_index(line , opcodeTable_and_directives) : 
+    for i in range(0,2) : 
+        if line[i] in opcodeTable_and_directives : 
+            return i 
+        continue
+    return -1 
+
 
 def create_intermediate_list(sourelist) : 
     mdtlist = [] 
