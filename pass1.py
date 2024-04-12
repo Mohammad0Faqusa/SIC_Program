@@ -59,27 +59,29 @@ for line in source[start_index+1:] :
     opcode_indx = opcode_index(line , opcodes_and_directives)
     if opcode_indx == -1 or opcode_indx > 1 or is_just_comment(line[opcode_indx]) : 
         raise OpcodeError("Opcode is not found , or is written in wrong place in line {0}".format(lineCounter))
+    
     opcode = line[opcode_indx]
+    if opcode == 'END' : 
+        break 
 
     statent_length = 1 
     #check if valid opernad , and detect if opernad is not missed 
-
+    print(line , lineCounter) 
     operand_indx = opcode_indx + 1
-    if operand_indx <= len(line) : 
+    if operand_indx < len(line) : 
         if not is_just_comment(line[operand_indx]) : 
-            if line[opcode_indx] not in opcodes_with_no_operands : 
+            if line[opcode_indx] in opcodes_with_no_operands : 
                 raise OperandError("Operand is missed in line  {}".format(lineCounter))
         else : 
-            statent_length = operand_indx + 1 
+            if line[opcode_indx] not in opcodes_with_no_operands : 
+                raise OperandError("Operand is missed in line  {}".format(lineCounter))
     else : 
         if line[opcode_indx] not in opcodes_with_no_operands:
             raise OperandError("Operand is missed in line  {}".format(lineCounter))
 
             
     
-    if opcode == 'END' : 
-        break 
-
+    
   
     lineCounter += 1 
 
