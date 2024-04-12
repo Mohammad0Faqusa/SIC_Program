@@ -3,3 +3,6 @@ class OpcodeError(Exception):
 
 class DuplicateSymbol(Exception) : 
     pass 
+
+class OperandError(Exception) : 
+    pass 

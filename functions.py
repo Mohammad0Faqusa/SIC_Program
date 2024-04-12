@@ -11,7 +11,6 @@
 #     return unique_list
 from exceptions import * 
 
-
 def file_to_list(f_sourcedir) : 
     f_source = open(f_sourcedir)
     source = f_source.readlines() 

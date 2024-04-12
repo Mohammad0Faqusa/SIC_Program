@@ -8,6 +8,7 @@ opcodes = file_to_dict("opcodeTable.txt")
 
 sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
                    "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
+opcodes_with_no_operands = ['RSUB' , 'END' , 'LTORG']
 
 opcodes_and_directives = list(opcodes.keys())
 opcodes_and_directives.extend(sic_directives) 
@@ -53,10 +54,28 @@ for line in source[start_index+1:] :
         continue 
 
     line = string_to_list(line)  
+
+    #check if valid opcode , and detect the opcode index 
     opcode_indx = opcode_index(line , opcodes_and_directives)
-    if opcode_indx == -1 or opcode_indx > 1 : 
+    if opcode_indx == -1 or opcode_indx > 1 or is_just_comment(line[opcode_indx]) : 
         raise OpcodeError("Opcode is not found , or is written in wrong place in line {0}".format(lineCounter))
     opcode = line[opcode_indx]
+
+    statent_length = 1 
+    #check if valid opernad , and detect if opernad is not missed 
+
+    operand_indx = opcode_indx + 1
+    if operand_indx <= len(line) : 
+        if not is_just_comment(line[operand_indx]) : 
+            if line[opcode_indx] not in opcodes_with_no_operands : 
+                raise OperandError("Operand is missed in line  {}".format(lineCounter))
+        else : 
+            statent_length = operand_indx + 1 
+    else : 
+        if line[opcode_indx] not in opcodes_with_no_operands:
+            raise OperandError("Operand is missed in line  {}".format(lineCounter))
+
+            
     
     if opcode == 'END' : 
         break 

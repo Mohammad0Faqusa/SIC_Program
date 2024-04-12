@@ -5,7 +5,7 @@ FLOAT        C0
 HIO          F4
 J            3C
 JEQ          30
-hee hoo JGT          34
+JGT          34
 JLT          38
 ADD          18
 ADDF         58
