@@ -9,6 +9,8 @@
 #     unique_list = [sublist for sublist in sourcelist if sublist]
 #     f_source.close() 
 #     return unique_list
+from exceptions import * 
+
 
 def file_to_list(f_sourcedir) : 
     f_source = open(f_sourcedir)

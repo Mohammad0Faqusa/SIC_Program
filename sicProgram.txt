@@ -6,6 +6,7 @@ CLOOP     JSUB   RDREC
           COMP   ZERO
           JEQ    ENDFIL
           JSUB   WRREC
+.this is just a comment 
           J      CLOOP
 ENDFIL    LDA    EOF
           STA    BUFFER
