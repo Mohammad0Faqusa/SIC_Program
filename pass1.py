@@ -22,37 +22,13 @@ locCounter = 0
 errorFlag = 0  
 lineCounter = 1 
 
-#check the first line , if START
-start_index = index_first_line(source) 
-lineCounter = start_index + 1
-first_line = source[start_index] 
 
-counterLine = start_index 
 
-first_line = string_to_list(first_line) 
-first_opcode_index = opcode_index(first_line , opcodes_and_directives)
-startOpcode = first_line[first_opcode_index] 
+lineCounter = 1 
 
-if startOpcode == 'START' : 
-    #save the operand as starting address 
-    startAddress = first_line[first_opcode_index + 1] 
-    #initialize the location counter to starting address 
-    locCounter = int(startAddress)
-    #write the line to intermediate file 
-    intermediateList.append(first_line[0:first_opcode_index+2])
-    #read next input line 
-    lineCounter += 1 
-else : 
-    locCounter = 0  
-    lineCounter += 1 
+for line in source :
 
-label = '' 
-opcode = '' 
-operand = '' 
 
-for line in source[start_index+1:] :
-
-    
     if is_just_comment(line) : 
         lineCounter += 1 
         continue 
@@ -131,8 +107,8 @@ for line in source[start_index+1:] :
                     raise OpcodeError("Opcode is missed in line {}".format(lineCounter))
                 else : 
                     label = word1 
-                    operand = word2 
-                    if operand in solo_opcodes : 
+                    opcode = word2 
+                    if opcode in solo_opcodes : 
                         if not is_just_comment(word3) : 
                             raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
                                        .format(lineCounter))
