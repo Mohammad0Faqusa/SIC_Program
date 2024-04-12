@@ -56,78 +56,78 @@ def is_just_comment(str) :
     else :
         return False 
 
-def index_first_line(list) : 
-    start_index = 0 
-    for x in list : 
-        if is_just_comment(x) : 
-            start_index += 1  
-            continue 
-        else : 
-            return start_index 
+# def index_first_line(list) : 
+#     start_index = 0 
+#     for x in list : 
+#         if is_just_comment(x) : 
+#             start_index += 1  
+#             continue 
+#         else : 
+#             return start_index 
 
-def opcode_index(line , opcodeTable_and_directives) : 
-    for i in range(0,2) : 
-        if line[i] in opcodeTable_and_directives : 
-            return i 
-        continue
-    return -1 
+# def opcode_index(line , opcodeTable_and_directives) : 
+#     for i in range(0,2) : 
+#         if line[i] in opcodeTable_and_directives : 
+#             return i 
+#         continue
+#     return -1 
 
 
-def create_intermediate_list(sourelist) : 
-    mdtlist = [] 
-    for x in sourelist : 
-        mdtlist.append(['' , tuple(x)])
-    return mdtlist
+# def create_intermediate_list(sourelist) : 
+#     mdtlist = [] 
+#     for x in sourelist : 
+#         mdtlist.append(['' , tuple(x)])
+#     return mdtlist
 
-def check_if_has_comment(line) : 
-    for i in range(len(line)) : 
-        if '.' in line[i] :
-            return i+1  
-    return False 
+# def check_if_has_comment(line) : 
+#     for i in range(len(line)) : 
+#         if '.' in line[i] :
+#             return i+1  
+#     return False 
 
-def check_if_has_symbol(line) : 
-    if not check_if_has_comment(line) :
-        if len(line) > 2 :
-            return True 
-    elif check_if_has_comment(line) > 3 : 
-        return False 
-    else : 
-        return True 
+# def check_if_has_symbol(line) : 
+#     if not check_if_has_comment(line) :
+#         if len(line) > 2 :
+#             return True 
+#     elif check_if_has_comment(line) > 3 : 
+#         return False 
+#     else : 
+#         return True 
 
-def flatten_list(input_list):
-    flattened_list = []
-    for item in input_list:
-        if isinstance(item, list):
-            # If the item is a list, recursively flatten it and extend the flattened result
-            flattened_list.extend(flatten_list(item))
-        else:
-            # If the item is not a list, add it directly to the flattened list
-            flattened_list.append(item)
-    return flattened_list
+# def flatten_list(input_list):
+#     flattened_list = []
+#     for item in input_list:
+#         if isinstance(item, list):
+#             # If the item is a list, recursively flatten it and extend the flattened result
+#             flattened_list.extend(flatten_list(item))
+#         else:
+#             # If the item is not a list, add it directly to the flattened list
+#             flattened_list.append(item)
+#     return flattened_list
 
-def list_to_file(file_path, my_list):
-    # Open the file in write mode
-    with open(file_path, 'w') as file:
-        # Write each element to a new line in the file
+# def list_to_file(file_path, my_list):
+#     # Open the file in write mode
+#     with open(file_path, 'w') as file:
+#         # Write each element to a new line in the file
         
-        for element in my_list:
-            strelement = '' 
-            for x in element : 
-                strelement += str(x).ljust(10 , ' ')
+#         for element in my_list:
+#             strelement = '' 
+#             for x in element : 
+#                 strelement += str(x).ljust(10 , ' ')
 
-            file.write(strelement + '\n')
-    file.close() 
+#             file.write(strelement + '\n')
+#     file.close() 
 
-def dict_to_file(dictionary, file_path):
-    with open(file_path, 'w') as file:
-        for key, value in dictionary.items():
-            file.write(f"{key}: {value}\n")
+# def dict_to_file(dictionary, file_path):
+#     with open(file_path, 'w') as file:
+#         for key, value in dictionary.items():
+#             file.write(f"{key}: {value}\n")
 
-def comment_statement(statement) : 
-    if statement[0] == '.' :
-        return True 
-    else : 
-        return False
+# def comment_statement(statement) : 
+#     if statement[0] == '.' :
+#         return True 
+#     else : 
+#         return False
 
 
 

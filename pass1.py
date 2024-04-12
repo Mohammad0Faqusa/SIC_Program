@@ -8,7 +8,7 @@ opcodes = file_to_dict("opcodeTable.txt")
 
 sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
                    "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
-solo_opcodes  = ['RSUB'  , 'LTORG']
+solo_opcodes  = ['RSUB'  ,'END' ,  'LTORG']
 
 opcodes_and_directives = list(opcodes.keys())
 opcodes_and_directives.extend(sic_directives) 
@@ -17,7 +17,7 @@ opcodes_and_directives.extend(sic_directives)
 symb_dict = dict()  
 intermediateList = [] 
 programName = '' 
-startAddress = '' 
+startAddress = 0
 locCounter = 0 
 errorFlag = 0  
 lineCounter = 1 
@@ -42,7 +42,7 @@ for line in source :
     if len(line) == 1 : 
         word1 = line[0]
         if not is_just_comment(word1) : 
-            op_index = opcode_index(line , opcodes_and_directives) 
+            # op_index = opcode_index(line , opcodes_and_directives) 
             if word1 not in opcodes_and_directives : 
                 raise OpcodeError("the opcode is missed in line {}".format(lineCounter))
             else : 
@@ -65,7 +65,7 @@ for line in source :
         else  : # word 2 is not comment 
             if word1 in opcodes_and_directives : 
                 opcode = word1
-                if opcode in solo_opcodes :
+                if opcode in solo_opcodes and opcode != "END" :
                     raise OperandError("Operand is written error, or you forgot to insert \".\" befor the comment in line {}"
                                        .format(lineCounter))
                 else : 
@@ -179,20 +179,24 @@ locCounter = 0
 if firstOpcode == "START" : 
     firstOperand = intermediateList[0]['operand']
     locCounter = int(firstOperand , 16) 
+    startAddress = locCounter
     intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
 else : 
     intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
 
 firstAddress = locCounter 
 
-for i in range(len(intermediateList[1:])) : 
+
+for i in range(len(intermediateList[1:]) + 1) : 
     line = intermediateList[i] 
     linCount = intermediateList[i]['line']
     symbol = intermediateList[i]['label']
     opcode = intermediateList[i]['opcode']
     operand = intermediateList[i]['operand']
-
+    print(opcode) 
     if opcode != 'END' : 
+        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
+
         if symbol != '' : 
             if symbol in symb_dict : 
                 raise DuplicateSymbol("A duplicated symbol in symbol table while adding the symbol {0} in line {1}"
@@ -210,13 +214,26 @@ for i in range(len(intermediateList[1:])) :
             locCounter += int(operand) 
         elif opcode == 'BYTE' : 
             locCounter += len(operand) 
-    
+    else : 
         intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
-    else :
-        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
-        programLength = locCounter - firstAddress 
+        programLength = int(locCounter) - int(startAddress)
+        print(hex(locCounter))
+        print(hex(startAddress))
+        print(hex(programLength))
 
-print(intermediateList) 
+import json
+
+
+# File path to write JSON data
+file_path = "data.json"
+
+# Write JSON data to file
+with open(file_path, "w") as json_file:
+    json.dump(intermediateList, json_file)
+
+print("JSON data has been written to", file_path)
+
+
 
 
 
