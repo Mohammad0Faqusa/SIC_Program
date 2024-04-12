@@ -7,3 +7,6 @@ class DuplicateSymbol(Exception) :
 class OperandError(Exception) : 
     pass 
 
+class DuplicatedOpcode(Exception) : 
+    pass 
+

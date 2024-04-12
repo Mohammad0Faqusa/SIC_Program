@@ -8,7 +8,7 @@ opcodes = file_to_dict("opcodeTable.txt")
 
 sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
                    "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
-opcodes_with_no_operands = ['RSUB' , 'END' , 'LTORG']
+solo_opcodes  = ['RSUB'  , 'LTORG']
 
 opcodes_and_directives = list(opcodes.keys())
 opcodes_and_directives.extend(sic_directives) 
@@ -46,7 +46,9 @@ else :
     locCounter = 0  
     lineCounter += 1 
 
-
+label = '' 
+opcode = '' 
+operand = '' 
 
 for line in source[start_index+1:] :
 
@@ -57,127 +59,138 @@ for line in source[start_index+1:] :
 
     line = string_to_list(line)  
 
-    #check if valid opcode , and detect the opcode index 
-    opcode_indx = opcode_index(line , opcodes_and_directives)
-    if opcode_indx == -1 or opcode_indx > 1 or is_just_comment(line[opcode_indx]) : 
-        raise OpcodeError("Opcode is not found , or is written in wrong place in line {0}".format(lineCounter))
-    
-    opcode = line[opcode_indx]
-    if opcode == 'END' : 
-        break 
+    label = '' 
+    opcode = '' 
+    operand = '' 
 
-    statent_length = 1 
-    # File length : 
-	# • Case 1 
-	# 	○ If not comment : (solved)
-	# 		§ If not opcode : 
-	# 			□ Raise error (opcode is missed)
-	# 		§ Else : 
-	# 			□ If not solo opcode  : 
-	# 				® Rase Error (operand is missed) 
-	# 			□ Else : 
-	# 				® Statement_length = 1 
-	# • Case 2 
-	# 	○ If word2 is comment : 
-	# 		§ If word1 not opcode : 
-	# 			□ Raise error (opcode is missed)
-	# 		§ Else : 
-	# 			□ If word1 not solo opcode  : 
-	# 				® Rase Error (operand is missed) 
-	# 			□ Else : 
-	# 				® Statement_length = 1 
-	# 	○ If word 2 is not comment : 
-	# 		§ If word1 is opcode : 
-	# 			□ If word 1 is solo opcode 
-	# 				® Reise error : (operand is written error, or you forgot to indicate it as comment
-	# 			□ Else : 
-	# 				® Statement_length = 2 {opcode , operand} 
-	# 		§ Else -word1 is label- : 
-	# 			□ Word2 is not solo opcode : 
-	# 				® Rase error (operand is missed) 
-	# 			□ Else : 
-	# 				® Statement_length = 2 {label , opcode}  
-	# • Case > 2 
-	# 	○ Case 3 
-	# 		§ If word1 is opcode : 
-	# 			□ If word2 is comment : 
-	# 				® If not solo operand 
-	# 					◊ Rase error (operand is missed) 
-	# 			□ Else : 
-	# 				® If word 2 is operand : 
-	# 					◊ If opcode is solo : 
-	# 						} Rase error (operand is written wrong, or you forgut to insert "." if comment
-	# 					◊ Else 
-	# 						} If word3 is comment : 
-	# 							– Statement_length = 2 {opcode , operand} 
-	# 						} Else : 
-	# 							– Rase error (operand is written wrong, or you forgut to insert "." if comment
-	# 		§ Else (word1 is label) 
-	# 			□ If word 2 is comment 
-	# 				® Raise error (opcode is missed) 
-	# 			□ Else [word 2 not comment] : 
-	# 				® If not opcode : 
-	# 					◊ Rease error (opcode is missed) 
-	# 				® Else : 
-	# 					◊ If solo opcode 
-	# 						} Word 3 is not comment 
-	# 							– Raise error (operand is written wrong, or you forgut to insert "." 
-	# 						} Else 
-	# 							– Statement_length = 2 {label , solo_opcode} 
-	# 					◊ Else [not solo opcode] : 
-	# 						} If word 3 is comment : 
-	# 							– Error : operand is missed 
-	# 						} Else  :
-	# 							– Stement length = 3 {label, opcode, operand} 
-	# 	○ Case > 3 
-	# 		§ If word1 is opcode : 
-	# 			□ If word2 is comment : 
-	# 				® If not solo operand 
-	# 					◊ Rase error (operand is missed) 
-	# 			□ Else : 
-	# 				® If word 2 is operand : 
-	# 					◊ If opcode is solo : 
-	# 						} Rase error (operand is written wrong, or you forgut to insert "." if comment
-	# 					◊ Else 
-	# 						} If word3 is comment : 
-	# 							– Statement_length = 2 {opcode , operand} 
-	# 						} Else : 
-	# 							– Rase error (operand is written wrong, or you forgut to insert "." if comment
-	# 		§ Else (word1 is label) 
-	# 			□ If word 2 is comment 
-	# 				® Raise error (opcode is missed) 
-	# 			□ Else [word 2 not comment] : 
-	# 				® If not opcode : 
-	# 					◊ Rease error (opcode is missed) 
-	# 				® Else : 
-	# 					◊ If solo opcode 
-	# 						} Word 3 is not comment 
-	# 							– Raise error (operand is written wrong, or you forgut to insert "." 
-	# 						} Else 
-	# 							– Statement_length = 2 {label , solo_opcode} 
-	# 					◊ Else [not solo opcode] : 
-	# 						} If word 3 is comment : 
-	# 							– Error : operand is missed 
-	# 						} Else  :
-	# 							– If word 4 is not comment : 
-	# 								w Raise error (wrong comment) 
-	# 							– Else 
-	# 								w Stement length = 3 {label, opcode, operand} 
-			
+    if len(line) == 1 : 
+        word1 = line[0]
+        if not is_just_comment(word1) : 
+            op_index = opcode_index(line , opcodes_and_directives) 
+            if word1 not in opcodes_and_directives : 
+                raise OpcodeError("the opcode is missed in line {}".format(lineCounter))
+            else : 
+                opcode = word1
+                if opcode not in solo_opcodes : 
+                    raise OperandError("the operand is missed in line {}".format(lineCounter))
+                
+    elif len(line) == 2 : 
+        word1 = line[0] 
+        word2 = line[1] 
+        # op_index = opcode_index(line , opcodes_and_directives)
 
-    
-    #write the line into knwon columns locations 
-    seperatedLine = dict() 
-    if statent_length == 1 : 
-        seperatedLine.update({'line' : lineCounter , 'OPCODE': opcode })
-    else : 
-        seperatedLine.update({'line' : lineCounter , 'OPCODE': opcode , 'OPERAND' : operand })
-    
-    print(seperatedLine) 
+        if is_just_comment(word2) : 
+            if word1 not in opcodes_and_directives : #if word 1 is not opcode 
+                raise OpcodeError("opcode is missed in line {}".format(lineCounter))
+            else : 
+                opcode = word1 
+                if opcode not in solo_opcodes : 
+                    raise OperandError("operand is missed in line {}".format(lineCounter))
+        else  : # word 2 is not comment 
+            if word1 in opcodes_and_directives : 
+                opcode = word1
+                if opcode in solo_opcodes :
+                    raise OperandError("Operand is written error, or you forgot to insert \".\" befor the comment in line {}"
+                                       .format(lineCounter))
+                else : 
+                    operand = word2
+            else : #word 1 is label 
+                if word2 not in opcodes_and_directives : 
+                    raise OperandError("Operand is missed in line {}".format(lineCounter))
+                else : 
+                    label = word1 
+                    opcode = word2 
 
-            
-    
-    
+    elif len(line) == 3 : 
+        word1 = line[0] 
+        word2 = line[1] 
+        word3 = line[2] 
+
+        if word1 in opcodes_and_directives :
+            opcode = word1 
+            if is_just_comment(word2) : 
+                if opcode not in solo_opcodes :
+                    raise OperandError("Operand is missed in line {}".format(lineCounter))
+            else : 
+                if opcode in solo_opcodes : 
+                    raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+                else : 
+                    if is_just_comment(word3) : 
+                        operand = word2 
+                    else : 
+                        raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+        else : #word 1 is label 
+            if is_just_comment(word2) : 
+                raise OperandError("opcode is missed in line {}".format(lineCounter))
+            else : #word 2 not comment 
+                if word2 not in opcodes_and_directives : 
+                    raise OpcodeError("Opcode is missed in line {}".format(lineCounter))
+                else : 
+                    label = word1 
+                    operand = word2 
+                    if operand in solo_opcodes : 
+                        if not is_just_comment(word3) : 
+                            raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+                    else : 
+                        if is_just_comment(word3) : 
+                            raise OperandError("Operand is missed in line {}".format(lineCounter))
+                        else : 
+                            operand = word3 
+    else : #line length > 3 
+        word1 = line[0] 
+        word2 = line[1] 
+        word3 = line[2] 
+        word4 = line[3]
+        if word1 in opcodes_and_directives : 
+            opcode = word1 
+            if is_just_comment(word2) : 
+                if operand not in solo_opcodes : 
+                    raise OperandError("Operand is missed in line {}".format(lineCounter))
+            else : #if word 2 is operand 
+                operand = word2 
+                if  operand not in opcodes_and_directives : 
+                    if operand in solo_opcodes : 
+                        raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+                    else : 
+                        if is_just_comment(word3) : 
+                            operand = word2
+                        else : 
+                            raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+        
+                            
+                else : # error duplicated opcodes 
+                    raise DuplicatedOpcode("Duplicated opcode in line {}".format(lineCounter))
+                
+        else : #word1 is label 
+            label = word1 
+            if is_just_comment(word2) : 
+                raise OpcodeError("the opcode is missed in line {}".format(lineCounter))
+            else : 
+                if word2 not in opcodes_and_directives : 
+                    raise OperandError("Opcode is missed in line {}".format(lineCounter))
+                else  :
+                    opcode = word2 
+                    if opcode in solo_opcodes : 
+                        if not is_just_comment(word3) : 
+                            raise OperandError("Operand is missed in line {}".format(lineCounter))
+                    else : #not solo opcode 
+                        if is_just_comment(word3) : 
+                            raise OperandError("Operand is missed in line {}".format(lineCounter)) 
+                        else : 
+                            operand = word3 
+                            if not is_just_comment(word4) : 
+                                raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
+                                       .format(lineCounter))
+
+                        
+    print(lineCounter , label , opcode , operand) 
+        
+
   
     lineCounter += 1 
 
