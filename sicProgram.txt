@@ -32,7 +32,7 @@ RLOOP     TD     INPUT
           TIX    MAXLEN
           JLT    RLOOP
 EXIT      STX    LENGTH
-          RSUB
+          RSUB  .write
 INPUT     BYTE   X'F1'
 MAXLEN    WORD   4096
 WRREC     LDX    ZERO

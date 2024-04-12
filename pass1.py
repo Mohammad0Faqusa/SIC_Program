@@ -46,6 +46,8 @@ else :
     locCounter = 0  
     lineCounter += 1 
 
+
+
 for line in source[start_index+1:] :
 
 
@@ -65,19 +67,41 @@ for line in source[start_index+1:] :
         break 
 
     statent_length = 1 
+    operand = '' 
     #check if valid opernad , and detect if opernad is not missed 
-    print(line , lineCounter) 
     operand_indx = opcode_indx + 1
     if operand_indx < len(line) : 
         if not is_just_comment(line[operand_indx]) : 
             if line[opcode_indx] in opcodes_with_no_operands : 
                 raise OperandError("Operand is missed in line  {}".format(lineCounter))
+            else : 
+                statent_length = operand_indx + 1 
+                operand = line[operand_indx]
+        if operand_indx + 1 < len(line) : 
+            if not is_just_comment(line[operand_indx + 1]) : 
+                raise OperandError("Operand is now written correctly, or you forgot to put \".\" before the comment in line  {}"
+                                   .format(lineCounter))
         else : 
-            if line[opcode_indx] not in opcodes_with_no_operands : 
-                raise OperandError("Operand is missed in line  {}".format(lineCounter))
+            if line[opcode_indx]  in opcodes_with_no_operands  : 
+                if operand_indx < len(line) and not is_just_comment(line[operand_indx]) : 
+                    raise OperandError("Operand is missed in line  {}".format(lineCounter))
+            else : 
+                statent_length = opcode_indx + 1  
     else : 
         if line[opcode_indx] not in opcodes_with_no_operands:
             raise OperandError("Operand is missed in line  {}".format(lineCounter))
+        else : 
+            statent_length = opcode_indx + 1  
+
+    
+    #write the line into knwon columns locations 
+    seperatedLine = dict() 
+    if statent_length == 1 : 
+        seperatedLine.update({'line' : lineCounter , 'OPCODE': opcode })
+    else : 
+        seperatedLine.update({'line' : lineCounter , 'OPCODE': opcode , 'OPERAND' : operand })
+    
+    print(seperatedLine) 
 
             
     
