@@ -10,3 +10,6 @@ class OperandError(Exception) :
 class DuplicatedOpcode(Exception) : 
     pass 
 
+class DuplicatedSymbol(Exception) : 
+    pass 
+

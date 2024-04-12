@@ -21,7 +21,7 @@ startAddress = ''
 locCounter = 0 
 errorFlag = 0  
 lineCounter = 1 
-
+programLength = 0 
 
 
 lineCounter = 1 
@@ -165,11 +165,61 @@ for line in source :
                                 raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
                                        .format(lineCounter))
 
-                        
+
     seperatedLine = dict() 
     seperatedLine.update({'line' : lineCounter , 'label' : label , 'opcode' : opcode , 'operand' : operand}) 
     intermediateList.append(seperatedLine) 
     lineCounter += 1 
 
+
+# Now processing in Pass1 through intermediate list : 
+
+firstOpcode = intermediateList[0]['opcode']
+locCounter = 0 
+if firstOpcode == "START" : 
+    firstOperand = intermediateList[0]['operand']
+    locCounter = int(firstOperand , 16) 
+    intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
+else : 
+    intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
+
+firstAddress = locCounter 
+
+for i in range(len(intermediateList[1:])) : 
+    line = intermediateList[i] 
+    linCount = intermediateList[i]['line']
+    symbol = intermediateList[i]['label']
+    opcode = intermediateList[i]['opcode']
+    operand = intermediateList[i]['operand']
+
+    if opcode != 'END' : 
+        if symbol != '' : 
+            if symbol in symb_dict : 
+                raise DuplicateSymbol("A duplicated symbol in symbol table while adding the symbol {0} in line {1}"
+                                      .format(symbol , linCount ))
+            else : 
+                symb_dict.update({symbol : hex(locCounter)})
+
+        if opcode in opcodes  : 
+            locCounter += 3 
+        elif opcode == 'WORD' :
+            locCounter += 3 
+        elif opcode == 'RESW' : 
+            locCounter += 3 * int(operand) 
+        elif opcode == 'RESB' : 
+            locCounter += int(operand) 
+        elif opcode == 'BYTE' : 
+            locCounter += len(operand) 
+    
+        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
+    else :
+        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
+        programLength = locCounter - firstAddress 
+
 print(intermediateList) 
 
+
+
+
+
+            
