@@ -213,7 +213,7 @@ for i in range(len(intermediateList[1:]) + 1) :
         elif opcode == 'RESB' : 
             locCounter += int(operand) 
         elif opcode == 'BYTE' : 
-            locCounter += len(operand) 
+            locCounter += len(opcode[2:])
     else : 
         intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
         programLength = int(locCounter) - int(startAddress)
