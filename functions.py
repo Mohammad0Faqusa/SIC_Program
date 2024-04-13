@@ -88,5 +88,14 @@ def is_just_comment(str) :
 def program_length_hexa(first_hexa_locaiton , last_hexa_location) : 
     return hex(int(last_hexa_location , 16) - int(first_hexa_locaiton , 16))
 
+def ascii_to_hex(char):
+    hex_representation = hex(ord(char))
+    return hex_representation
+
+def string_to_hex_string(string):
+    hex_string = '' 
+    for x in string : 
+        hex_string += ascii_to_hex(x)[2:]
+    return hex_string
 
 

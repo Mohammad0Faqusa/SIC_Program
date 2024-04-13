@@ -68,9 +68,18 @@ for line in intermediateList[1:] :
         operandValue = 0 
 
     if opcode in sic_directives : 
-        if opcode == 'WORD' : 
+        if opcode == 'WORD'  : 
             operandValue = str(hex(int(operand , 16)))[2:]
-            object_code = operandValue.zfill(6) 
+            object_code = operandValue.zfill(6)
+        elif opcode == 'BYTE' : 
+            if operand.startswith('C\'') : 
+                operandValue = operand[2:-1]
+                operandValue = functions.string_to_hex_string(operandValue) 
+                object_code = operandValue.zfill(6)
+            elif operand.startswith('X\'') : 
+                operandValue = operand[2:-1]
+                operandValue = str(operandValue)[2:] 
+                object_code = operandValue.zfill(6)
         else : 
             operandValue = '' 
     else : 
@@ -79,19 +88,5 @@ for line in intermediateList[1:] :
     listingline = dict(line)
     listingline.update({'operand_value' : operandValue , 'object_code' : object_code})
     listingLines.append(listingline) 
-
-    # listingLines.append(listingline)
-for x in listingLines : 
-    print(x) 
-# for x in listingLines : 
-#     print(x) 
-
-# for i in range(len(intermediateList)) : 
-
-#     line = intermediateList[i] 
-#     linCount = line['line']
-#     symbol = line['label']
-#     opcode = line['opcode']
-#     operand = line['operand']
-#     locCount = int(line['LOCCTR'] , 16)
+    
 
