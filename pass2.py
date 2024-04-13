@@ -44,6 +44,7 @@ text_record = ''
 text_record_lines = [] 
 text_record_max_length = 60 
 object_sum = '' 
+text_record_start_location = '' 
 
 for line in intermediateList[1:] : 
     
@@ -55,6 +56,8 @@ for line in intermediateList[1:] :
     operandValue = ''
     object_code = ''  
 
+    if text_record == "" : 
+        text_record_start_location = str(locCounter)[2:]
     if operand != '' and not operand.isdigit() and opcode not in sic_directives  : 
         # if operand in symbols_dict : 
         if operand in symbols_dict : 
@@ -98,7 +101,7 @@ for line in intermediateList[1:] :
     if (object_code == '') : 
         if object_sum == '' : 
             continue 
-        text_record = 'T^'+(locCounter)[2:].zfill(6)+text_record
+        text_record = 'T^'+text_record_start_location.zfill(6)+text_record
         text_record_lines.append(text_record)
         text_record = ''  
         object_sum = '' 
@@ -107,14 +110,10 @@ for line in intermediateList[1:] :
         text_record += '^'
         text_record += object_code 
     else : 
-        text_record = 'T^'+(locCounter)[2:].zfill(6)+text_record
+        text_record = 'T^'+text_record_start_location.zfill(6)+text_record
         text_record_lines.append(text_record)
         text_record = '' 
         object_sum = '' 
 
-for x in listingLines : 
-    print(x) 
 for x in text_record_lines : 
     print(x) 
-    
-
