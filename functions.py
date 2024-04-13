@@ -85,6 +85,8 @@ def is_just_comment(str) :
         return False 
 
 
+def program_length_hexa(first_hexa_locaiton , last_hexa_location) : 
+    return hex(int(last_hexa_location , 16) - int(first_hexa_locaiton , 16))
 
 
 

@@ -168,7 +168,15 @@ for line in source :
 
     seperatedLine = dict() 
     seperatedLine.update({'line' : lineCounter , 'label' : label , 'opcode' : opcode , 'operand' : operand}) 
+
+    for x , y in seperatedLine.items() : 
+        if type(y) == str : 
+            if len(y) > 6 : 
+                if not (x == 'operand' and y.endswith(',X')) : 
+                    raise Overflow("The the number of digits that are reserved for {} : {} is out of range".format(x , y ))
+                
     intermediateList.append(seperatedLine) 
+    
     lineCounter += 1 
 
 
@@ -180,22 +188,22 @@ if firstOpcode == "START" :
     firstOperand = intermediateList[0]['operand']
     locCounter = int(firstOperand , 16) 
     startAddress = locCounter
-    intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
+    intermediateList[0].update({'LOCCTR' : hex(locCounter)})
 else : 
-    intermediateList[0].update({'LOCCTR' : str(hex(locCounter))[2:]})
+    intermediateList[0].update({'LOCCTR' : hex(locCounter)})
 
 firstAddress = locCounter 
 
 
 for i in range(len(intermediateList[1:]) + 1) : 
     line = intermediateList[i] 
-    linCount = intermediateList[i]['line']
-    symbol = intermediateList[i]['label']
-    opcode = intermediateList[i]['opcode']
-    operand = intermediateList[i]['operand']
-    print(opcode) 
+    linCount = line['line']
+    symbol = line['label']
+    opcode = line['opcode']
+    operand = line['operand']
+
     if opcode != 'END' : 
-        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
+        line.update({'LOCCTR' : str(hex(locCounter))})
 
         if symbol != '' : 
             if symbol in symb_dict : 
@@ -215,15 +223,12 @@ for i in range(len(intermediateList[1:]) + 1) :
         elif opcode == 'BYTE' : 
             locCounter += len(opcode[2:])
     else : 
-        intermediateList[i].update({'LOCCTR' : str(hex(locCounter))[2:]})
+        line.update({'LOCCTR' : str(hex(locCounter))})
         programLength = int(locCounter) - int(startAddress)
-        print(hex(locCounter))
-        print(hex(startAddress))
-        print(hex(programLength))
 
-print(symb_dict) 
 
-import json
+
+
 
 
 # File path to write JSON data
@@ -232,4 +237,3 @@ symbol_dict_path = "symbols.json"
 
 write_json_file(symb_dict , symbol_dict_path) 
 write_json_file(intermediateList , intermediateList_path) 
-     

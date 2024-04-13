@@ -36,7 +36,7 @@ EXIT      STX    LENGTH
 INPUT     BYTE   X'F1'
 MAXLEN    WORD   4096
 WRREC     LDX    ZERO
-WLOOP     TD     OUTPUT
+WLOOP     TD     OUTPUT .this is not valid comment
           JEQ    WLOOP
           LDCH   BUFFER,X
           WD     OUTPUT

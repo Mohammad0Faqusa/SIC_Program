@@ -13,3 +13,8 @@ class DuplicatedOpcode(Exception) :
 class DuplicatedSymbol(Exception) : 
     pass 
 
+class Overflow(Exception) : 
+    pass 
+
+class UndefinedSymbol(Exception) : 
+    pass 

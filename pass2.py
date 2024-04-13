@@ -1,25 +1,64 @@
-from functions import read_json_file
+import functions
+import exceptions 
 # Example usage:
+sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
+                   "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
+
 intermediateList_path = "intermediate.json"
 symbols_path = "symbols.json" 
 
-intermediateList = read_json_file(intermediateList_path)
-symbols_dict = read_json_file(symbols_path)
+intermediateList = functions.read_json_file(intermediateList_path)
+symbols_dict = functions.read_json_file(symbols_path)
 
-for x in intermediateList : 
-    print(x) 
-for key , value in symbols_dict.items(): 
-    print(key , ":" , value ) 
+first_line = intermediateList[0]
+last_line = intermediateList[-1]
+
+first_location_counter = first_line['LOCCTR']
+last_location_counter = last_line['LOCCTR']
+
+program_length = functions.program_length_hexa(first_location_counter , last_location_counter) 
+if len(str(program_length)[2:]) > 6 : 
+    raise exceptions.Overflow("The number of digits that are reserved for Program length {} is out of range"
+                              .format(str(program_length)[2:]))
+
+program_name = first_line['label']
 
 listingLines = [] 
+objectLines = [] 
 
+header = '' 
+firstLine = intermediateList[0] 
+opcode = firstLine['opcode']
+object_code = '' 
 
-# firstLine = intermediateList[0] 
-# opcode = firstLine['opcode']
-# object_code = '' 
-# listingLines.append(firstLine.update({}))
-# if opcode == 'START' : 
+if opcode == 'START' : 
+    listingLines.append(firstLine.update({'opjectCode' : object_code}))
+    
+header = "H^{0}^{1}^{2}".format(program_name, str(first_location_counter)[2:] , str(program_length)[2:])
+objectLines.append(header) 
+text_record = '' 
 
+for line in intermediateList[1:] : 
+    
+    linCount = line['line']
+    symbol = line['label']
+    opcode = line['opcode']
+    operand = line['operand']
+    locCounter = line['LOCCTR']
+    operandValue = '' 
+
+    if operand != '' and not operand.isdigit() and opcode not in sic_directives  : 
+        # if operand in symbols_dict : 
+        if operand in symbols_dict : 
+            operandValue = symbols_dict[operand]
+
+        elif  operand.endswith(',X') :
+            operandValue = symbols_dict[operand[:-2]]
+        
+        else: 
+            operandValue = 0 
+            raise exceptions.UndefinedSymbol("undefine symbol operand  \"{}\" {} in line ({}) ".format(operand ,operandValue,  linCount))
+    print(linCount , opcode , operand , operandValue) 
 
 
 # for i in range(len(intermediateList)) : 
@@ -30,6 +69,4 @@ listingLines = []
 #     opcode = line['opcode']
 #     operand = line['operand']
 #     locCount = int(line['LOCCTR'] , 16)
-
-#     if opcode == "START" : 
 
