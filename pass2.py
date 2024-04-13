@@ -34,10 +34,10 @@ opcode = firstLine['opcode']
 object_code = '' 
 
 if opcode == 'START' : 
-    firstLine.update({'opjectCode' : object_code})
+    firstLine.update({'object_code' : object_code})
     listingLines.append(firstLine)
     
-header = "H^{0}^{1}^{2}".format(program_name, str(first_location_counter)[2:] , str(program_length)[2:])
+header = "H^{0}^{1}^{2}".format(program_name, str(first_location_counter)[2:].zfill(6) , str(program_length)[2:].zfill(6))
 objectLines.append(header) 
 
 text_record = '' 
@@ -115,5 +115,12 @@ for line in intermediateList[1:] :
         text_record = '' 
         object_sum = '' 
 
-for x in text_record_lines : 
-    print(x) 
+end_record = 'E^' + str(first_location_counter)[2:].zfill(6)
+
+
+objectLines.extend(text_record_lines) 
+objectLines.append(end_record) 
+
+
+functions.write_list_of_dicts_to_file(listingLines , 'listting_file')
+functions.write_list_to_file(objectLines, 'object_file')

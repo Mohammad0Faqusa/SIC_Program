@@ -99,3 +99,31 @@ def string_to_hex_string(string):
     return hex_string
 
 
+def write_list_of_dicts_to_file(list_of_dicts, filename):
+    if not list_of_dicts:
+        print("List of dictionaries is empty. Nothing to write.")
+        return
+
+    # Extract column names from the keys of the first dictionary
+    column_names = list(list_of_dicts[0].keys())
+
+    with open(filename, 'w') as csvfile:
+        # Write the column names (keys of the dictionaries) as the first row
+        csvfile.write(' '.join([column.ljust(12) for column in column_names]) + '\n')
+        
+        # Write the values of each dictionary as rows in the file
+        for record in list_of_dicts:
+            row_values = [str(record[column]).ljust(12) for column in column_names]
+            csvfile.write(' '.join(row_values) + '\n')
+
+
+def write_list_to_file(list_of_strings, filename):
+    with open(filename, 'w') as file:
+        for string in list_of_strings:
+            file.write(string + '\n')
+
+
+
+
+
+
