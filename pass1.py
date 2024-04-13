@@ -221,22 +221,15 @@ for i in range(len(intermediateList[1:]) + 1) :
         print(hex(startAddress))
         print(hex(programLength))
 
+print(symb_dict) 
+
 import json
 
 
 # File path to write JSON data
-file_path = "data.json"
+intermediateList_path = "intermediate.json"
+symbol_dict_path = "symbols.json"
 
-# Write JSON data to file
-with open(file_path, "w") as json_file:
-    json.dump(intermediateList, json_file)
-
-print("JSON data has been written to", file_path)
-
-
-
-
-
-
-
-            
+write_json_file(symb_dict , symbol_dict_path) 
+write_json_file(intermediateList , intermediateList_path) 
+     

@@ -33,6 +33,12 @@ def read_json_file(file_path):
         print("Error decoding JSON from file:", file_path)
         return []
 
+def write_json_file(data , file_path) : 
+    # Write JSON data to file
+    with open(file_path, "w") as json_file:
+        json.dump(data, json_file)
+    print("JSON data has been written to", file_path)
+
 def file_to_list(f_sourcedir) : 
     f_source = open(f_sourcedir)
     source = f_source.readlines() 
