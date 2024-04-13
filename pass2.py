@@ -39,7 +39,11 @@ if opcode == 'START' :
     
 header = "H^{0}^{1}^{2}".format(program_name, str(first_location_counter)[2:] , str(program_length)[2:])
 objectLines.append(header) 
+
 text_record = '' 
+text_record_lines = [] 
+text_record_max_length = 60 
+object_sum = '' 
 
 for line in intermediateList[1:] : 
     
@@ -88,5 +92,29 @@ for line in intermediateList[1:] :
     listingline = dict(line)
     listingline.update({'operand_value' : operandValue , 'object_code' : object_code})
     listingLines.append(listingline) 
+    
+    object_sum += object_code 
+    
+    if (object_code == '') : 
+        if object_sum == '' : 
+            continue 
+        text_record = 'T^'+(locCounter)[2:].zfill(6)+text_record
+        text_record_lines.append(text_record)
+        text_record = ''  
+        object_sum = '' 
+
+    if (len(object_sum + object_code) <= text_record_max_length ) : 
+        text_record += '^'
+        text_record += object_code 
+    else : 
+        text_record = 'T^'+(locCounter)[2:].zfill(6)+text_record
+        text_record_lines.append(text_record)
+        text_record = '' 
+        object_sum = '' 
+
+for x in listingLines : 
+    print(x) 
+for x in text_record_lines : 
+    print(x) 
     
 
