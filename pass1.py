@@ -2,7 +2,15 @@ from functions import *
 from exceptions import * 
 
 
-source = file_to_fixed_list("sicProgram.txt")
+"""
+Name : Mohammad Faquse
+ID : 201014 
+GitHub : https://github.com/Mohammad0Faqusa/SIC_Program.git 
+
+"""
+source_file = 'source_file.asm'
+
+source = file_to_fixed_list(source_file)
 
 opcodes = file_to_dict("opcodeTable.txt")
 
@@ -173,7 +181,7 @@ for line in source :
         if type(y) == str : 
             if len(y) > 6 : 
                 if not (x == 'operand' and y.endswith(',X')) : 
-                    raise Overflow("The the number of digits that are reserved for {} : {} is out of range".format(x , y ))
+                    raise Overflow("The the number of digits that are reserved for {} : {} is out of range in line {} ".format(x , y , lineCounter ))
                 
     intermediateList.append(seperatedLine) 
     

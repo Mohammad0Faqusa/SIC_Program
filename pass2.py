@@ -1,6 +1,15 @@
 import functions
 import exceptions 
-# Example usage:
+
+
+"""
+Name : Mohammad Faquse
+ID : 201014 
+GitHub : https://github.com/Mohammad0Faqusa/SIC_Program.git 
+
+"""
+
+
 sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
                    "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
 
@@ -85,7 +94,6 @@ for line in intermediateList[1:] :
                 object_code = operandValue.zfill(6)
             elif operand.startswith('X\'') : 
                 operandValue = operand[2:-1]
-                operandValue = str(operandValue)[2:] 
                 object_code = operandValue.zfill(6)
         else : 
             operandValue = '' 
@@ -101,16 +109,18 @@ for line in intermediateList[1:] :
     if (object_code == '') : 
         if object_sum == '' : 
             continue 
-        text_record = 'T^'+text_record_start_location.zfill(6)+text_record
+        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:]+text_record
         text_record_lines.append(text_record)
         text_record = ''  
         object_sum = '' 
 
-    if (len(object_sum + object_code) <= text_record_max_length ) : 
+    if (len(object_sum + object_code) <= text_record_max_length) : 
         text_record += '^'
         text_record += object_code 
     else : 
-        text_record = 'T^'+text_record_start_location.zfill(6)+text_record
+        text_record += '^'
+        text_record += object_code 
+        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:]+text_record
         text_record_lines.append(text_record)
         text_record = '' 
         object_sum = '' 

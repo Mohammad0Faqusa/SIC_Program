@@ -79,7 +79,7 @@ def file_to_dict(sourceFile) :
     return result_dict
 
 def is_just_comment(str) : 
-    if str[0] == '.' : 
+    if str[0] == '.' or str[0] == '/' : 
         return True 
     else :
         return False 
