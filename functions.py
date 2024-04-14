@@ -113,8 +113,6 @@ def write_list_of_dicts_to_file(list_of_dicts, filename):
     comment = column_names.pop(4) 
     column_names.append(comment) 
 
-    print(column_names) 
-
     with open(filename, 'w') as csvfile:
         # Write the column names (keys of the dictionaries) as the first row
         csvfile.write(' '.join([column.ljust(12) for column in column_names]) + '\n')
@@ -123,12 +121,13 @@ def write_list_of_dicts_to_file(list_of_dicts, filename):
         for record in list_of_dicts:
             row_values = [str(record[column]).ljust(12) for column in column_names]
             csvfile.write(' '.join(row_values) + '\n')
-
+    print("the file {} has already been written".format(filename))
 
 def write_list_to_file(list_of_strings, filename):
     with open(filename, 'w') as file:
         for string in list_of_strings:
             file.write(string + '\n')
+    print("the file {} has already been written".format(filename))
 
 def merge_string_list(list) : 
     strlist = '' 
