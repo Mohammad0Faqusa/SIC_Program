@@ -1,6 +1,6 @@
 import subprocess
 
-source_file = 'sicProgram.txt'
+
 def run_python_files(files):
     for file in files:
         subprocess.run(['python', file])

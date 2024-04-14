@@ -56,14 +56,23 @@ object_sum = ''
 text_record_start_location = '' 
 
 for line in intermediateList[1:] : 
-    
+
+    listingline = dict(line)
+    operandValue = ''
+    object_code = ''  
+
     linCount = line['line']
     symbol = line['label']
     opcode = line['opcode']
     operand = line['operand']
     locCounter = line['LOCCTR']
-    operandValue = ''
-    object_code = ''  
+    comment = line['comment']
+
+    if (symbol == '' and opcode == '') : 
+        listingline['LOCCTR'] = '' 
+        listingline.update({'operand_value' : operandValue , 'object_code' : object_code})
+        listingLines.append(listingline)
+        continue 
 
     if text_record == "" : 
         text_record_start_location = str(locCounter)[2:]
@@ -100,7 +109,7 @@ for line in intermediateList[1:] :
     else : 
         object_code = (opcodes[opcode] + str(operandValue)).zfill(6)
 
-    listingline = dict(line)
+    
     listingline.update({'operand_value' : operandValue , 'object_code' : object_code})
     listingLines.append(listingline) 
     
@@ -109,7 +118,7 @@ for line in intermediateList[1:] :
     if (object_code == '') : 
         if object_sum == '' : 
             continue 
-        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:]+text_record
+        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:].zfill(2)+text_record
         text_record_lines.append(text_record)
         text_record = ''  
         object_sum = '' 
@@ -120,7 +129,7 @@ for line in intermediateList[1:] :
     else : 
         text_record += '^'
         text_record += object_code 
-        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:]+text_record
+        text_record = 'T^'+text_record_start_location.zfill(6)+'^'+str(hex(int(len(object_sum)/2)))[2:].zfill(2)+text_record
         text_record_lines.append(text_record)
         text_record = '' 
         object_sum = '' 

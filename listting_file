@@ -1,47 +1,53 @@
-line         label        opcode       operand      LOCCTR       object_code 
-1            COPY         START        1000         0x1000                   
-2            FIRST        STL          RETADR       0x1000       141032      
-3            CLOOP        JSUB         RDREC        0x1003       482038      
-4                         LDA          LENGTH       0x1006       001035      
-5                         COMP         ZERO         0x1009       28102f      
-6                         JEQ          ENDFIL       0x100c       301015      
-7                         JSUB         WRREC        0x100f       482061      
-8                         J            CLOOP        0x1012       3C1003      
-9            ENDFIL       LDA          EOF          0x1015       00102a      
-10                        STA          BUFFER       0x1018       0C1038      
-11                        LDA          THREE        0x101b       00102c      
-12                        STA          LENGTH       0x101e       0C1035      
-13                        JSUB         WRREC        0x1021       482061      
-14                        LDL          RETADR       0x1024       081032      
-15                        RSUB                      0x1027       0004C0      
-16           EOF          BYTE         C'EOF'       0x102a       454f46      
-17           THREE        WORD         3            0x102c       000003      
-18           ZERO         WORD         0            0x102f       000000      
-19           RETADR       RESW         1            0x1032                   
-20           LENGTH       RESW         1            0x1035                   
-21           BUFFER       RESB         4096         0x1038                   
-25           RDREC        LDX          ZERO         0x2038       04102f      
-26                        LDA          ZERO         0x203b       00102f      
-27           RLOOP        TD           INPUT        0x203e       E0205c      
-28                        JEQ          RLOOP        0x2041       30203e      
-29                        RD           INPUT        0x2044       D8205c      
-30                        COMP         ZERO         0x2047       28102f      
-31                        JEQ          EXIT         0x204a       302056      
-32                        STCH         BUFFER,X     0x204d       541038      
-33                        TIX          MAXLEN       0x2050       2C205e      
-34                        JLT          RLOOP        0x2053       38203e      
-35           EXIT         STX          LENGTH       0x2056       101035      
-36                        RSUB                      0x2059       0004C0      
-37           INPUT        BYTE         X'F1'        0x205c       0000F1      
-38           MAXLEN       WORD         4096         0x205e       004096      
-42           WRREC        LDX          ZERO         0x2061       04102f      
-43           WLOOP        TD           OUTPUT       0x2064       E02079      
-44                        JEQ          WLOOP        0x2067       302064      
-45                        LDCH         BUFFER,X     0x206a       501038      
-46                        WD           OUTPUT       0x206d       DC2079      
-47                        TIX          LENGTH       0x2070       2C1035      
-48                        JLT          WLOOP        0x2073       382064      
-49                        LTORG                     0x2076                   
-50                        RSUB                      0x2076       0004C0      
-51           OUTPUT       BYTE         X'05'        0x2079       000005      
-52                        END          FIRST        0x207b                   
+line         label        opcode       operand      LOCCTR       object_code  comment     
+1            COPY         START        1000         0x1000                                
+2            FIRST        STL          RETADR       0x1000       141032                   
+3            CLOOP        JSUB         RDREC        0x1003       482038                   
+4                         LDA          LENGTH       0x1006       001035        .COMMENTCOMMENTCOMMENTCOMMENTCOMMENT
+5                         COMP         ZERO         0x1009       28102f        .COMMENTCOMMENT
+6                         JEQ          ENDFIL       0x100c       301015                   
+7                         JSUB         WRREC        0x100f       482061        .COMMENTCOMMENT
+8                         J            CLOOP        0x1012       3C1003                   
+9            ENDFIL       LDA          EOF          0x1015       00102a                   
+10                        STA          BUFFER       0x1018       0C1038        .COMMENT   
+11                        LDA          THREE        0x101b       00102c                   
+12                        STA          LENGTH       0x101e       0C1035                   
+13                        JSUB         WRREC        0x1021       482061        .COMMENT   
+14                        LDL          RETADR       0x1024       081032                   
+15                        RSUB                      0x1027       0004C0                   
+16           EOF          BYTE         C'EOF'       0x102a       454f46                   
+17           THREE        WORD         3            0x102c       000003                   
+18           ZERO         WORD         0            0x102f       000000                   
+19           RETADR       RESW         1            0x1032                                
+20           LENGTH       RESW         1            0x1035                                
+21           BUFFER       RESB         4096         0x1038                                
+22                                                                             .          
+23                                                                             . SUBROUTINE TO READ RECORD INTO BUFFER
+24                                                                             .          
+25           RDREC        LDX          ZERO         0x2038       04102f                   
+26                        LDA          ZERO         0x203b       00102f        .COMMENT   
+27           RLOOP        TD           INPUT        0x203e       E0205c                   
+28                        JEQ          RLOOP        0x2041       30203e                   
+29                        RD           INPUT        0x2044       D8205c        .COMMENTCOMMENTCOMMENT
+30                        COMP         ZERO         0x2047       28102f                   
+31                        JEQ          EXIT         0x204a       302056                   
+32                        STCH         BUFFER,X     0x204d       541038                   
+33                        TIX          MAXLEN       0x2050       2C205e                   
+34                        JLT          RLOOP        0x2053       38203e                   
+35           EXIT         STX          LENGTH       0x2056       101035                   
+36                        RSUB                      0x2059       0004C0                   
+37           INPUT        BYTE         X'F1'        0x205c       0000F1                   
+38           MAXLEN       WORD         4096         0x205e       004096                   
+39                                                                             .          
+40                                                                             . SUBROUTINE TO WRITE RECORD FROM BUFFER
+41                                                                             .          
+42           WRREC        LDX          ZERO         0x2061       04102f                   
+43           WLOOP        TD           OUTPUT       0x2064       E02079                   
+44                        JEQ          WLOOP        0x2067       302064                   
+45                        LDCH         BUFFER,X     0x206a       501038                   
+46                        WD           OUTPUT       0x206d       DC2079                   
+47                        TIX          LENGTH       0x2070       2C1035                   
+48                        JLT          WLOOP        0x2073       382064                   
+49                        LTORG                     0x2076                                
+50                        RSUB                      0x2076       0004C0                   
+51           OUTPUT       BYTE         X'05'        0x2079       000005                   
+52                        END          FIRST        0x207b                                

@@ -98,6 +98,10 @@ def string_to_hex_string(string):
         hex_string += ascii_to_hex(x)[2:]
     return hex_string
 
+def swap(x , y) : 
+    temp = x 
+    x = y 
+    y = temp 
 
 def write_list_of_dicts_to_file(list_of_dicts, filename):
     if not list_of_dicts:
@@ -106,6 +110,10 @@ def write_list_of_dicts_to_file(list_of_dicts, filename):
 
     # Extract column names from the keys of the first dictionary
     column_names = list(list_of_dicts[0].keys())
+    comment = column_names.pop(4) 
+    column_names.append(comment) 
+
+    print(column_names) 
 
     with open(filename, 'w') as csvfile:
         # Write the column names (keys of the dictionaries) as the first row
@@ -122,8 +130,11 @@ def write_list_to_file(list_of_strings, filename):
         for string in list_of_strings:
             file.write(string + '\n')
 
-
-
+def merge_string_list(list) : 
+    strlist = '' 
+    for x in list :
+        strlist += ' ' + x 
+    return strlist
 
 
 
