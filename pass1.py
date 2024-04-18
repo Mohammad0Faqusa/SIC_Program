@@ -1,4 +1,4 @@
-from functions import * 
+import functions 
 from exceptions import * 
 
 
@@ -10,9 +10,9 @@ GitHub : https://github.com/Mohammad0Faqusa/SIC_Program.git
 """
 source_file = 'source_file.asm'
 
-source = file_to_fixed_list(source_file)
+source = functions.file_to_fixed_list(source_file)
 
-opcodes = file_to_dict("opcodeTable.txt")
+opcodes = functions.file_to_dict("opcodeTable.txt")
 
 sic_directives = ["START", "END", "BYTE", "WORD", "RESB", "RESW", "BASE", "NOBASE",
                    "EQU", "LTORG", "ORG", "EXTDEF", "EXTREF", "CSECT", "USING"]
@@ -34,166 +34,11 @@ programLength = 0
 
 lineCounter = 1 
 
-for line in source :
+for line in source : #to check line words, and filter these words to their columns
 
-    comment = '' 
-    label = '' 
-    opcode = '' 
-    operand = '' 
-    line = string_to_list(line)  
-
-    if is_just_comment(line[0]) : 
-        comment = merge_string_list(line)   
-
-    else : 
-        if len(line) == 1 : 
-            word1 = line[0]
-            
-            if word1 not in opcodes_and_directives : 
-                raise OpcodeError("the opcode is missed in line {}".format(lineCounter))
-            else : 
-                opcode = word1
-                if opcode not in solo_opcodes : 
-                    raise OperandError("the operand is missed in line {}".format(lineCounter))
-                 
-        elif len(line) == 2 : 
-            word1 = line[0] 
-            word2 = line[1] 
-            # op_index = opcode_index(line , opcodes_and_directives)
-
-            if is_just_comment(word2) :
-
-                comment = word2 
-
-                if word1 not in opcodes_and_directives : #if word 1 is not opcode 
-                    raise OpcodeError("opcode is missed in line {}".format(lineCounter))
-                else : 
-                    opcode = word1 
-                    if opcode not in solo_opcodes : 
-                        raise OperandError("operand is missed in line {}".format(lineCounter))
-            else  : # word 2 is not comment 
-                if word1 in opcodes_and_directives : 
-                    opcode = word1
-                    if opcode in solo_opcodes and opcode != "END" :
-                        raise OperandError("Operand is written error, or you forgot to insert \".\" befor the comment in line {}"
-                                        .format(lineCounter))
-                    else : 
-                        operand = word2
-                        if operand in opcodes_and_directives : 
-                            raise DuplicatedOpcode("Error Opcode is written on operand field in line {}".format(lineCounter))
-                else : #word 1 is label 
-                    if word2 not in opcodes_and_directives : 
-                        raise OperandError("Operand is missed in line {}".format(lineCounter))
-                    else : 
-                        label = word1 
-                        opcode = word2 
-
-        elif len(line) == 3 : 
-            word1 = line[0] 
-            word2 = line[1] 
-            word3 = line[2] 
-
-            if word1 in opcodes_and_directives :
-                opcode = word1 
-                if is_just_comment(word2) : 
-                    comment = merge_string_list(line[1:])
-                    if opcode not in solo_opcodes :
-                        raise OperandError("Operand is missed in line {}".format(lineCounter))
-                else : 
-                    if opcode in solo_opcodes : 
-                        raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-                    else : 
-                        if is_just_comment(word3) : 
-                            comment = merge_string_list(line[2:])
-                            operand = word2 
-                        else : 
-                            raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-            else : #word 1 is label 
-                if is_just_comment(word2) : 
-                    comment = merge_string_list[1:]
-                    raise OperandError("opcode is missed in line {}".format(lineCounter))
-                else : #word 2 not comment 
-                    if word2 not in opcodes_and_directives : 
-                        raise OpcodeError("Opcode is missed in line {}".format(lineCounter))
-                    else : 
-                        label = word1 
-                        opcode = word2 
-                        if opcode in solo_opcodes : 
-                            if not is_just_comment(word3) : 
-                                raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-                            else : 
-                                comment = word3 
-                        else : 
-                            if is_just_comment(word3) : 
-                                raise OperandError("Operand is missed in line {}".format(lineCounter))
-                            else : 
-                                operand = word3 
-        else : #line length > 3 
-            word1 = line[0] 
-            word2 = line[1] 
-            word3 = line[2] 
-            word4 = line[3]
-            if word1 in opcodes_and_directives : 
-                opcode = word1 
-                if is_just_comment(word2) : 
-                    comment = merge_string_list[1:]
-                    if operand not in solo_opcodes : 
-                        raise OperandError("Operand is missed in line {}".format(lineCounter))
-                else : #if word 2 is operand 
-                    operand = word2 
-                    if  operand not in opcodes_and_directives : 
-                        if operand in solo_opcodes : 
-                            raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-                        else : 
-                            if is_just_comment(word3) : 
-                                comment = merge_string_list[2:]
-                                operand = word2
-                            else : 
-                                raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-            
-                                
-                    else : # error duplicated opcodes 
-                        raise DuplicatedOpcode("Duplicated opcode in line {}".format(lineCounter))
-                    
-            else : #word1 is label 
-                label = word1 
-                if is_just_comment(word2) : 
-                    raise OpcodeError("the opcode is missed in line {}".format(lineCounter))
-                else : 
-                    if word2 not in opcodes_and_directives : 
-                        raise OperandError("Opcode is missed in line {}".format(lineCounter))
-                    else  :
-                        opcode = word2 
-                        if opcode in solo_opcodes : 
-                            if not is_just_comment(word3) : 
-                                raise OperandError("Operand is missed in line {}".format(lineCounter))
-                            else : 
-                                comment = merge_string_list(line[2:])
-                        else : #not solo opcode 
-                            if is_just_comment(word3) : 
-                                raise OperandError("Operand is missed in line {}".format(lineCounter)) 
-                            else : 
-                                operand = word3 
-                                if not is_just_comment(word4) : 
-                                    raise OperandError("Operand is written wrong, or you forgut to insert \".\" before the comment in line {}"
-                                        .format(lineCounter))
-
-
-    seperatedLine = dict() 
-    seperatedLine.update({'line' : lineCounter , 'label' : label , 'opcode' : opcode , 'operand' : operand , 'comment' : comment}) 
-
-    for x , y in seperatedLine.items() : 
-        if type(y) == str : 
-            if len(y) > 6 and not x == 'comment': 
-                if not (x == 'operand' and y.endswith(',X')) : 
-                    raise Overflow("The the number of digits that are reserved for {} : {} is out of range in line {} ".format(x , y , lineCounter ))
+    filtered_line = functions.filter_string_line(line, lineCounter , opcodes_and_directives , solo_opcodes )
                 
-    intermediateList.append(seperatedLine) 
+    intermediateList.append(filtered_line) 
     
     lineCounter += 1 
 
@@ -246,13 +91,10 @@ for i in range(len(intermediateList[1:]) + 1) :
 
 
 
-
-
-
 # File path to write JSON data
 intermediateList_path = "intermediate.json"
 symbol_dict_path = "symbols.json"
 
-write_json_file(symb_dict , symbol_dict_path) 
-write_json_file(intermediateList , intermediateList_path) 
+functions.write_json_file(symb_dict , symbol_dict_path) 
+functions.write_json_file(intermediateList , intermediateList_path) 
 

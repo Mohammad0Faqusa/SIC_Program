@@ -1,5 +1,17 @@
 import subprocess
 
+"""
+Name : Mohammad Faquse
+ID : 201014 
+GitHub : https://github.com/Mohammad0Faqusa/SIC_Program.git 
+
+"""
+
+"""
+start run the program here 
+the program will run pass1 then pass2 
+
+"""
 
 def run_python_files(files):
     for file in files:
